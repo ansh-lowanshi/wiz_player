@@ -9,14 +9,8 @@ class AlbumRepositoryImpl implements AlbumRepository {
   AlbumRepositoryImpl(this.remoteSource);
 
   @override
-  Future<List<AlbumEntity>> searchAlbums(
-    String query, {
-    int? limit,
-  }) async {
-    final results = await remoteSource.searchAlbums(
-      query,
-      limit: limit,
-    );
+  Future<List<AlbumEntity>> searchAlbums(String query, {int? limit}) async {
+    final results = await remoteSource.searchAlbums(query, limit: limit);
 
     return AlbumModel.fromList(results);
   }

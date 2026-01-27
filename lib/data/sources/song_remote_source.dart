@@ -4,10 +4,7 @@ import 'package:http/http.dart' as http;
 class SongRemoteSource {
   static const _baseUrl = 'https://saavn.sumit.co';
 
-  Future<List<dynamic>> searchSongs(
-    String query, {
-    int limit = 10,
-  }) async {
+  Future<List<dynamic>> searchSongs(String query, {int limit = 10}) async {
     final uri = Uri.parse(
       '$_baseUrl/api/search/songs?query=$query&limit=$limit',
     );
