@@ -1,5 +1,3 @@
-import 'package:crystal_navigation_bar/crystal_navigation_bar.dart';
-import 'package:dynamic_tabbar/dynamic_tabbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wiz_player/common/appnavigation/app_navigation.dart';
@@ -9,8 +7,9 @@ import 'package:wiz_player/core/config/theme/bloc/theme_event.dart';
 import 'package:wiz_player/presentation/FavouriteTab/pages/favouritepage.dart';
 import 'package:wiz_player/presentation/HomeTab/pages/hometabpage.dart';
 import 'package:wiz_player/presentation/PlaylistTab/pages/playlistpage.dart';
-import 'package:wiz_player/presentation/ProfileTab/pages/profilepage.dart';
+import 'package:wiz_player/presentation/SettingTab/pages/settings_page.dart';
 import 'package:wiz_player/presentation/homepage/pages/debug.dart';
+import 'package:wiz_player/presentation/search/pages/search_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -39,7 +38,7 @@ class _HomePageState extends State<HomePage> {
             children: [
               IconButton(
                 onPressed: () {
-                  AppNavigation.push(context, SongDebugPage());
+                  AppNavigation.push(context, SearchPage());
                 },
                 icon: Icon(Icons.search),
               ),
@@ -63,7 +62,7 @@ class _HomePageState extends State<HomePage> {
             HomeTabPage(),
             FavouritePage(),
             PlaylistPage(),
-            ProfilePage(),
+            SettingsPage(),
           ],
         ),
       ),
@@ -91,7 +90,10 @@ class _HomePageState extends State<HomePage> {
             icon: Icon(Icons.playlist_play),
             label: 'Playlist',
           ),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Settings',
+          ),
         ],
       ),
     );
