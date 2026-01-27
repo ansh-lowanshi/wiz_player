@@ -6,7 +6,7 @@ class AlbumRemoteSource {
 
   Future<List<dynamic>> searchAlbums(
     String query, {
-    int limit = 10,
+    int? limit,
   }) async {
     final uri = Uri.parse(
       '$_baseUrl/api/search/albums?query=$query&limit=$limit',

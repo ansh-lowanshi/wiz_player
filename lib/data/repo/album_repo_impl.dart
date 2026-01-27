@@ -11,7 +11,7 @@ class AlbumRepositoryImpl implements AlbumRepository {
   @override
   Future<List<AlbumEntity>> searchAlbums(
     String query, {
-    int limit = 10,
+    int? limit,
   }) async {
     final results = await remoteSource.searchAlbums(
       query,
