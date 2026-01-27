@@ -1,0 +1,59 @@
+name: wiz_player
+description: "A new Flutter project."
+publish_to: 'none' 
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.10.7
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+  another_flutter_splash_screen: ^1.2.1
+  flutter_launcher_icons: ^0.14.4
+  flutter_bloc: ^9.1.1
+  hydrated_bloc: ^10.1.1
+  path_provider: ^2.1.5
+  dynamic_tabbar: ^1.0.9
+  crystal_navigation_bar: ^1.1.0
+  just_audio: ^0.10.5
+  audio_session: ^0.2.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+
+  flutter_lints: ^6.0.0
+
+
+flutter:
+
+  uses-material-design: true
+
+  assets:
+    - assets/fonts/
+    - assets/images/
+
+  fonts:
+    - family: Bitter
+      fonts:
+        - asset: assets/fonts/Bitter-Black.ttf
+          weight: 900
+        - asset: assets/fonts/Bitter-Bold.ttf
+          weight: 600
+        - asset: assets/fonts/Bitter-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Bitter-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Bitter-Light.ttf
+          weight: 300
+
+flutter_icons:
+  android: true
+  iso: true
+  image_path: "assets/images/applogo.png"
+
