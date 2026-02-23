@@ -13,10 +13,10 @@ class ArtistModel extends ArtistEntity {
     final images = (json['image'] as List?) ?? [];
 
     return ArtistModel(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      role: json['role'] as String,
-      url: json['url'] as String,
+      id: json['id'] as String? ?? 'Unknown',
+      name: json['name'] as String? ?? 'Unknown',
+      role: json['role'] as String? ?? 'Unknown',
+      url: json['url'] as String? ?? 'Unknown',
       imageUrl: images.isNotEmpty ? images.last['url'] : '',
     );
   }

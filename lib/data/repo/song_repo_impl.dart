@@ -10,9 +10,14 @@ class SongRepositoryImpl implements SongRepository {
   SongRepositoryImpl(this.remoteSource);
 
   @override
-  Future<List<SongEntity>> searchSongs(String query, {int limit = 10}) async {
+  Future<List<SongEntity>> searchSongs(String query, {int? limit}) async {
     final results = await remoteSource.searchSongs(query, limit: limit);
 
     return SongModel.fromList(results);
+  }
+
+  @override
+  Future<Map<String, dynamic>> searchAll(String query) async {
+    return await remoteSource.searchAll(query);
   }
 }

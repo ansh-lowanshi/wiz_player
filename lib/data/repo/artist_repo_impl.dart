@@ -3,7 +3,7 @@ import 'package:wiz_player/domain/repo/artist_repo.dart';
 import '../../domain/entities/artist_entity.dart';
 import '../sources/artist_remote_source.dart';
 
-class ArtistRepositoryImpl implements ArtistRepo {
+class ArtistRepositoryImpl implements ArtistRepository {
   final ArtistRemoteSource remoteSource;
 
   ArtistRepositoryImpl(this.remoteSource);
