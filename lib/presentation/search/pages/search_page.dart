@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:wiz_player/core/config/theme/app_colors.dart';
 import 'package:wiz_player/core/config/theme/bloc/theme_bloc.dart';
 import 'package:wiz_player/core/config/theme/bloc/theme_event.dart';
@@ -63,12 +64,20 @@ class _SearchPageState extends State<SearchPage> {
                 textCapitalization: TextCapitalization.words,
                 decoration: InputDecoration(
                   hintText: 'Search for Songs, Artists...',
-                  prefixIcon: Icon(Icons.search),
+                  prefixIcon: IconButton(
+                    onPressed: () {
+                      context.read<SearchBloc>().add(
+                        SearchRequest(_controller.text.trim(), selected),
+                      );
+                    },
+                    icon: Icon(Icons.search),
+                  ),
                   suffixIcon: IconButton(
                     onPressed: () {
                       setState(() {
                         _controller.clear();
                       });
+                      context.read<SearchBloc>().add(ClearSearch());
                     },
                     icon: Icon(Icons.clear),
                   ),
@@ -97,6 +106,11 @@ class _SearchPageState extends State<SearchPage> {
                       setState(() {
                         selected = filter;
                       });
+                      if (_controller.text.trim().isNotEmpty) {
+                        context.read<SearchBloc>().add(
+                          SearchRequest(_controller.text.trim(), selected),
+                        );
+                      }
                     },
                     selectedColor: AppColors.primary.withOpacity(0.15),
                     backgroundColor:
@@ -110,7 +124,12 @@ class _SearchPageState extends State<SearchPage> {
                 child: BlocBuilder<SearchBloc, SearchState>(
                   builder: (context, state) {
                     if (state.isLoading) {
-                      return const Center(child: CircularProgressIndicator());
+                      return Center(
+                        child: LoadingAnimationWidget.staggeredDotsWave(
+                          color: AppColors.primary,
+                          size: 50,
+                        ),
+                      );
                     }
 
                     if (state.error != null) {
@@ -122,104 +141,216 @@ class _SearchPageState extends State<SearchPage> {
                       );
                     }
 
-                    if (state.songs.isEmpty &&
-                        state.albums.isEmpty &&
-                        state.artists.isEmpty) {
-                      return const Center(child: Text("Search for music 🎵"));
+                    if (selected == "All") {
+                      if (state.globalSearch == null) {
+                        return const Center(child: Text("Search for music 🎵"));
+                      }
+                    } else {
+                      if (state.songs.isEmpty &&
+                          state.albums.isEmpty &&
+                          state.artists.isEmpty) {
+                        return const Center(child: Text("Search for music 🎵"));
+                      }
                     }
 
                     return SingleChildScrollView(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          /// SONGS SECTION
-                          if (selected == "Songs" || selected == "All")
-                            if (state.songs.isNotEmpty) ...[
+                          if (selected == "All" &&
+                              state.globalSearch != null) ...[
+                            if (state.globalSearch!.songs.isNotEmpty) ...[
                               const SectionTitle(title: "Songs"),
-                              ListView.builder(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemCount: state.songs.length,
-                                itemBuilder: (context, index) {
-                                  final song = state.songs[index];
-
-                                  return ListTile(
-                                    leading: ClipRRect(
-                                      borderRadius: BorderRadius.circular(8),
-                                      child: Image.network(
-                                        song.imageUrl,
-                                        width: 50,
-                                        height: 50,
-                                        fit: BoxFit.cover,
-                                      ),
+                              ...state.globalSearch!.songs.map(
+                                (song) => ListTile(
+                                  leading: ClipRRect(
+                                    borderRadius: BorderRadius.circular(15),
+                                    child: Image.network(
+                                      song.imageUrl,
+                                      width: 50,
+                                      height: 50,
+                                      fit: BoxFit.cover,
                                     ),
-                                    title: Text(song.name),
-                                    subtitle: Text(song.artistName),
-                                    onTap: () {
-                                      // TODO: Navigate to player
-                                    },
-                                  );
-                                },
+                                  ),
+                                  title: Text(
+                                    song.title,
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  // subtitle: Text("ID: ${song.id}"),
+                                  subtitle: Text(
+                                    song.artistName,
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ),
                               ),
                               const SizedBox(height: 20),
                             ],
 
-                          /// ALBUMS SECTION
-                          if (selected == "Albums" || selected == "All")
-                            if (state.albums.isNotEmpty) ...[
-                              const SectionTitle(title: "Albums"),
-                              ListView.builder(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemCount: state.albums.length,
-                                itemBuilder: (context, index) {
-                                  final album = state.albums[index];
-
-                                  return ListTile(
-                                    leading: ClipRRect(
-                                      borderRadius: BorderRadius.circular(8),
-                                      child: Image.network(
-                                        album.imageUrl,
-                                        width: 50,
-                                        height: 50,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                    title: Text(album.name),
-                                    subtitle: Text(album.artistName),
-                                    onTap: () {
-                                      // TODO: Navigate to album details
-                                    },
-                                  );
-                                },
-                              ),
-                              const SizedBox(height: 20),
-                            ],
-
-                          /// ARTISTS SECTION
-                          if (selected == "Artists" || selected == "All")
-                            if (state.artists.isNotEmpty) ...[
+                            if (state.globalSearch!.artists.isNotEmpty) ...[
                               const SectionTitle(title: "Artists"),
-                              ListView.builder(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemCount: state.artists.length,
-                                itemBuilder: (context, index) {
-                                  final artist = state.artists[index];
-
-                                  return ListTile(
-                                    leading: CircleAvatar(
-                                      // child: safeNetworkImage(artist.imageUrl),
-                                      radius: 25,
+                              ...state.globalSearch!.artists.map(
+                                (artist) => ListTile(
+                                  leading: buildSafeArtistImage(
+                                    artist.imageUrl,
+                                  ),
+                                  title: Text(
+                                    artist.title,
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                      overflow: TextOverflow.ellipsis,
                                     ),
-                                    title: Text(artist.name),
-                                    onTap: () {
-                                      // TODO: Navigate to artist details
-                                    },
-                                  );
-                                },
+                                  ),
+                                  // subtitle: Text("ID: ${artist.id}"),
+                                ),
                               ),
                             ],
+
+                            if (state.globalSearch!.albums.isNotEmpty) ...[
+                              const SectionTitle(title: "Albums"),
+                              ...state.globalSearch!.albums.map(
+                                (album) => ListTile(
+                                  leading: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: Image.network(
+                                      album.imageUrl,
+                                      width: 50,
+                                      height: 50,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                  title: Text(
+                                    album.title,
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  // subtitle: Text("ID: ${album.id}"),
+                                  subtitle: Text(
+                                    album.artistName,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                            ],
+                          ],
+
+                          if (selected == "Songs" &&
+                              state.songs.isNotEmpty) ...[
+                            SizedBox(height: 10),
+                            // const SectionTitle(title: "Songs"),
+                            ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: state.songs.length,
+                              itemBuilder: (context, index) {
+                                final song = state.songs[index];
+
+                                return ListTile(
+                                  leading: ClipRRect(
+                                    borderRadius: BorderRadius.circular(15),
+                                    child: Image.network(
+                                      song.imageUrl,
+                                      width: 50,
+                                      height: 50,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                  title: Text(
+                                    song.name,
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  subtitle: Text(
+                                    song.artistName,
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                            const SizedBox(height: 20),
+                          ],
+
+                          if (selected == "Albums" &&
+                              state.albums.isNotEmpty) ...[
+                            // const SectionTitle(title: "Albums"),
+                            SizedBox(height: 10),
+                            ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: state.albums.length,
+                              itemBuilder: (context, index) {
+                                final album = state.albums[index];
+
+                                return ListTile(
+                                  leading: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: Image.network(
+                                      album.imageUrl,
+                                      width: 50,
+                                      height: 50,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                  title: Text(
+                                    album.name,
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  subtitle: Text(
+                                    album.artistName,
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                            const SizedBox(height: 20),
+                          ],
+
+                          if (selected == "Artists" &&
+                              state.artists.isNotEmpty) ...[
+                            // const SectionTitle(title: "Artists"),
+                            SizedBox(height: 10),
+                            ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: state.artists.length,
+                              itemBuilder: (context, index) {
+                                final artist = state.artists[index];
+
+                                return ListTile(
+                                  leading: buildSafeArtistImage(
+                                    artist.imageUrl,
+                                  ),
+                                  title: Text(
+                                    artist.name,
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
                         ],
                       ),
                     );
@@ -253,18 +384,24 @@ class SectionTitle extends StatelessWidget {
   }
 }
 
-Widget safeNetworkImage(String url, {double size = 50}) {
-  if (url.isEmpty || url.contains('artist-default')) {
-    return const Icon(Icons.person);
+Widget buildSafeArtistImage(String url) {
+  // Detect blocked placeholder images
+  if (url.contains('artist-default') || url.contains('jiosaavn.com/_i')) {
+    return const CircleAvatar(child: Icon(Icons.person));
   }
 
-  return Image.network(
-    url,
-    width: size,
-    height: size,
-    fit: BoxFit.cover,
-    errorBuilder: (_, __, ___) {
-      return const Icon(Icons.person);
-    },
+  return CircleAvatar(
+    backgroundColor: Colors.grey.shade200,
+    child: ClipOval(
+      child: Image.network(
+        url,
+        fit: BoxFit.cover,
+        width: 50,
+        height: 50,
+        errorBuilder: (_, __, ___) {
+          return const Icon(Icons.person);
+        },
+      ),
+    ),
   );
 }

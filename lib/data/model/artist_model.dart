@@ -18,6 +18,9 @@ class ArtistModel extends ArtistEntity {
       role: json['role'] as String? ?? 'Unknown',
       url: json['url'] as String? ?? 'Unknown',
       imageUrl: images.isNotEmpty ? images.last['url'] : '',
+    //   imageUrl: images.isNotEmpty
+    // ? (images.last['url'] as String? ?? '')
+    // : '',
     );
   }
 

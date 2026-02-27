@@ -5,4 +5,7 @@ class SearchRequest extends SearchEvent {
   final String filter;
 
   SearchRequest(this.query, this.filter);
+
 }
+
+class ClearSearch extends SearchEvent{}

@@ -4,10 +4,13 @@ import 'package:wiz_player/core/config/theme/app_theme.dart';
 import 'package:wiz_player/core/config/theme/bloc/theme_bloc.dart';
 import 'package:wiz_player/data/repo/album_repo_impl.dart';
 import 'package:wiz_player/data/repo/artist_repo_impl.dart';
+import 'package:wiz_player/data/repo/global_search_repo_impl.dart';
 import 'package:wiz_player/data/repo/song_repo_impl.dart';
 import 'package:wiz_player/data/sources/album_remote_source.dart';
 import 'package:wiz_player/data/sources/artist_remote_source.dart';
+import 'package:wiz_player/data/sources/global_search_remote_source.dart';
 import 'package:wiz_player/data/sources/song_remote_source.dart';
+import 'package:wiz_player/debug_page.dart';
 import 'package:wiz_player/presentation/search/bloc/search_bloc.dart';
 import 'package:wiz_player/presentation/splash/pages/splash.dart';
 
@@ -23,10 +26,12 @@ class MyApp extends StatelessWidget {
     final songRemoteSource = SongRemoteSource();
     final albumRemoteSource = AlbumRemoteSource();
     final artistRemoteSource = ArtistRemoteSource();
+    final globalSearchRemoteSource = GlobalSearchRemoteSource();
 
     final songRepository = SongRepositoryImpl(songRemoteSource);
     final albumRepository = AlbumRepositoryImpl(albumRemoteSource);
     final artistRepository = ArtistRepositoryImpl(artistRemoteSource);
+    final globalSearchRepository = GlobalSearchRepoImpl(globalSearchRemoteSource);
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => ThemeBloc()),
@@ -35,6 +40,7 @@ class MyApp extends StatelessWidget {
             songRepo: songRepository,
             albumRepo: albumRepository,
             artistRepo: artistRepository,
+            globalSearchRepo: globalSearchRepository,
           ),
         ),
       ],
