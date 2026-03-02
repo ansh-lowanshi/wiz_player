@@ -17,7 +17,17 @@ class SongRepositoryImpl implements SongRepository {
   }
 
   @override
-  Future<Map<String, dynamic>> searchAll(String query, {int? limit}) async {
-    return await remoteSource.searchAll(query,limit: limit);
+  Future<SongEntity> serchSongById(String id) async {
+    final results = await remoteSource.searchSongById(id);
+
+    return SongModel.fromJson(results);
+  }
+  
+  @override
+  Future<List<SongEntity>> songSuggestions(String id) async {
+    final results = await remoteSource.songSuggestions(id);
+    
+    return SongModel.fromList(results);
+
   }
 }

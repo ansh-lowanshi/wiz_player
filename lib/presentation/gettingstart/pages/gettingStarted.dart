@@ -4,8 +4,7 @@ import 'package:wiz_player/core/config/theme/app_colors.dart';
 import 'package:wiz_player/core/config/theme/bloc/theme_bloc.dart';
 import 'package:wiz_player/core/config/theme/bloc/theme_event.dart';
 import 'package:wiz_player/presentation/gettingstart/widgets/button.dart';
-import 'package:wiz_player/presentation/homepage/pages/home_page.dart';
-import 'package:wiz_player/presentation/signup/pages/signup.dart';
+import 'package:wiz_player/presentation/homepage/pages/base_page.dart';
 
 class Gettingstarted extends StatelessWidget {
   const Gettingstarted({super.key});

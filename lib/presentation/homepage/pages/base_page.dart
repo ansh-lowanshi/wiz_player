@@ -8,7 +8,6 @@ import 'package:wiz_player/presentation/FavouriteTab/pages/favouritepage.dart';
 import 'package:wiz_player/presentation/HomeTab/pages/hometabpage.dart';
 import 'package:wiz_player/presentation/PlaylistTab/pages/playlistpage.dart';
 import 'package:wiz_player/presentation/SettingTab/pages/settings_page.dart';
-import 'package:wiz_player/presentation/homepage/pages/debug.dart';
 import 'package:wiz_player/presentation/search/pages/search_page.dart';
 
 class HomePage extends StatefulWidget {

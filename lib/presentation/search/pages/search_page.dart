@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:wiz_player/common/appnavigation/app_navigation.dart';
 import 'package:wiz_player/core/config/theme/app_colors.dart';
 import 'package:wiz_player/core/config/theme/bloc/theme_bloc.dart';
 import 'package:wiz_player/core/config/theme/bloc/theme_event.dart';
+import 'package:wiz_player/presentation/playerPage/pages/player_page.dart';
 import 'package:wiz_player/presentation/search/bloc/search_bloc.dart';
 import 'package:wiz_player/presentation/search/bloc/search_evet.dart';
 import 'package:wiz_player/presentation/search/bloc/search_state.dart';
@@ -87,7 +89,6 @@ class _SearchPageState extends State<SearchPage> {
                       : AppColors.darkgrey,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
-                    // borderSide: BorderSide.none
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
@@ -179,7 +180,6 @@ class _SearchPageState extends State<SearchPage> {
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
-                                  // subtitle: Text("ID: ${song.id}"),
                                   subtitle: Text(
                                     song.artistName,
                                     maxLines: 1,
@@ -255,6 +255,12 @@ class _SearchPageState extends State<SearchPage> {
                                 final song = state.songs[index];
 
                                 return ListTile(
+                                  onTap: () {
+                                    AppNavigation.push(
+                                      context,
+                                      PlayerPage(songId: song.id),
+                                    );
+                                  },
                                   leading: ClipRRect(
                                     borderRadius: BorderRadius.circular(15),
                                     child: Image.network(
