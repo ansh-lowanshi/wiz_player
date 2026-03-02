@@ -8,6 +8,7 @@ import 'package:wiz_player/presentation/FavouriteTab/pages/favouritepage.dart';
 import 'package:wiz_player/presentation/HomeTab/pages/hometabpage.dart';
 import 'package:wiz_player/presentation/PlaylistTab/pages/playlistpage.dart';
 import 'package:wiz_player/presentation/SettingTab/pages/settings_page.dart';
+import 'package:wiz_player/presentation/playerPage/widgets/mini_player.dart';
 import 'package:wiz_player/presentation/search/pages/search_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -53,17 +54,26 @@ class _HomePageState extends State<HomePage> {
         ],
         toolbarHeight: 65,
       ),
-      body: Padding(
-        padding: EdgeInsets.all(10),
-        child: IndexedStack(
-          index: _currentIndex,
-          children: [
-            HomeTabPage(),
-            FavouritePage(),
-            PlaylistPage(),
-            SettingsPage(),
-          ],
-        ),
+      body: Stack(
+        children: [
+          Padding(
+            padding: EdgeInsets.all(10),
+            child: IndexedStack(
+              index: _currentIndex,
+              children: [
+                HomeTabPage(),
+                FavouritePage(),
+                PlaylistPage(),
+                SettingsPage(),
+              ],
+            ),
+          ),
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: kBottomNavigationBarHeight,
+            child: MiniPlayer())
+        ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Theme.of(context).brightness == Brightness.dark

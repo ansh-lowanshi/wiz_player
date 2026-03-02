@@ -9,4 +9,5 @@ class AppColors {
   static const cream = Color(0xffFFCB77);
   static const pink = Color(0xffFE6D73);
   static const blue = Color(0xff227C9D);
+  static const white = Colors.white;
 }
