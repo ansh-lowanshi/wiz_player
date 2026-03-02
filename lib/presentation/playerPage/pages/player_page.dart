@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -71,15 +72,40 @@ class _PlayerPageState extends State<PlayerPage> {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 20),
 
-                  LinearProgressIndicator(
-                    value: 0.5,
-                    backgroundColor: Colors.grey[200],
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                      AppColors.primary,
+                  Slider(
+                    padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                    thumbColor: AppColors.cream,
+                    min: 0,
+                    max: state.duration.inSeconds.toDouble(),
+                    value: state.position.inSeconds
+                        .clamp(0, state.duration.inSeconds)
+                        .toDouble(),
+                    activeColor: AppColors.primary,
+                    inactiveColor: Colors.grey[300],
+                    onChanged: (value) {
+                      context.read<PlayerBloc>().seek(
+                        Duration(seconds: value.toInt()),
+                      );
+                    },
+                  ),
+                  SizedBox(height: 2),
+
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+                      children: [
+                        Text(_formatDuration(state.position)),
+                        Text(
+                          '-${_formatDuration(state.duration - state.position)}',
+                        ),
+                      ],
                     ),
                   ),
+
                   BlocBuilder<PlayerBloc, PlayerState>(
                     builder: (context, state) {
                       return IconButton(
@@ -103,4 +129,11 @@ class _PlayerPageState extends State<PlayerPage> {
       ),
     );
   }
+}
+
+String _formatDuration(Duration duration) {
+  final minutes = duration.inMinutes.remainder(60).toString().padLeft(2, '0');
+  final seconds = duration.inSeconds.remainder(60).toString().padLeft(2, '0');
+
+  return '$minutes:$seconds';
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wiz_player/domain/repo/song_repo.dart';
 import 'package:wiz_player/presentation/playerPage/bloc/player_event.dart';
@@ -8,9 +10,27 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
   final SongRepository repository;
   final audio.AudioPlayer _audioPlayer = audio.AudioPlayer();
 
+  StreamSubscription? _PlayerStateSub;
+  StreamSubscription? _positionSub;
+  StreamSubscription? _durationSub;
+
   PlayerBloc(this.repository) : super(PlayerState()) {
     on<LoadSong>(_onLoadSong);
     on<PlayPause>(_onPlayPause);
+
+    _PlayerStateSub = _audioPlayer.playerStateStream.listen((playerState) {
+      emit(state.copyWith(isPlaying: playerState.playing));
+    });
+
+    _positionSub = _audioPlayer.positionStream.listen((position) {
+      emit(state.copyWith(position: position));
+    });
+
+    _durationSub = _audioPlayer.durationStream.listen((duration) {
+      if (duration != null) {
+        emit(state.copyWith(duration: duration));
+      }
+    });
   }
 
   Future<void> _onLoadSong(LoadSong event, Emitter<PlayerState> emit) async {
@@ -20,6 +40,8 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
       final song = await repository.serchSongById(event.songId);
       await _audioPlayer.setUrl(song.audioUrl);
       emit(state.copyWith(isLoading: false, song: song));
+      await _audioPlayer.play();
+      
     } catch (e) {
       emit(state.copyWith(isLoading: false, error: e.toString()));
     }
@@ -34,6 +56,10 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
       emit(state.copyWith(isPlaying: true));
     }
   }
+
+  Future<void> seek(Duration position) async {
+  await _audioPlayer.seek(position);
+}
 
   @override
   Future<void> close() {
