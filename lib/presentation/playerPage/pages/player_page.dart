@@ -137,16 +137,41 @@ class _PlayerPageState extends State<PlayerPage> {
 
                       BlocBuilder<PlayerBloc, PlayerState>(
                         builder: (context, state) {
-                          return IconButton(
-                            iconSize: 64,
-                            onPressed: () {
-                              context.read<PlayerBloc>().add(PlayPause());
-                            },
-                            icon: Icon(
-                              state.isPlaying
-                                  ? Icons.pause_circle_filled
-                                  : Icons.play_circle_fill,
-                            ),
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              IconButton(
+                                iconSize: 40,
+                                onPressed: () {
+                                  context.read<PlayerBloc>().add(
+                                    PlayPrevious(),
+                                  );
+                                },
+                                icon: Icon(Icons.skip_previous),
+                              ),
+                              SizedBox(width: 20,),
+
+                              IconButton(
+                                iconSize: 64,
+                                onPressed: () {
+                                  context.read<PlayerBloc>().add(PlayPause());
+                                },
+                                icon: Icon(
+                                  state.isPlaying
+                                      ? Icons.pause_circle_filled
+                                      : Icons.play_circle_fill,
+                                ),
+                              ),
+                              SizedBox(width: 20,),
+
+                              IconButton(
+                                iconSize: 40,
+                                onPressed: () {
+                                  context.read<PlayerBloc>().add(PlayNext());
+                                },
+                                icon: Icon(Icons.skip_next),
+                              ),
+                            ],
                           );
                         },
                       ),

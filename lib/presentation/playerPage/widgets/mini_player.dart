@@ -27,6 +27,15 @@ class MiniPlayer extends StatelessWidget {
             onTap: () {
               AppNavigation.push(context, PlayerPage(songId: song.id));
             },
+            onHorizontalDragEnd: (deails) {
+              final velocity = deails.primaryVelocity ?? 0;
+              if (velocity < 0) {
+                context.read<PlayerBloc>().add(PlayNext());
+              } else if (velocity > 0) {
+                context.read<PlayerBloc>().add(PlayPrevious());
+              }
+            },
+
             child: ClipRRect(
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(20),
@@ -105,6 +114,13 @@ class MiniPlayer extends StatelessWidget {
                                   color: Colors.white,
                                 ),
                               ),
+                              // IconButton(
+                              //   iconSize: 30,
+                              //   onPressed: () {
+                              //     context.read<PlayerBloc>().add(PlayNext());
+                              //   },
+                              //   icon: Icon(Icons.skip_next),
+                              // ),
                             ],
                           ),
 

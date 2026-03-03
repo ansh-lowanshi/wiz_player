@@ -7,3 +7,7 @@ class LoadSong extends PlayerEvent{
 }
 
 class PlayPause extends PlayerEvent{}
+
+class PlayNext extends PlayerEvent{}
+
+class PlayPrevious extends PlayerEvent{}
