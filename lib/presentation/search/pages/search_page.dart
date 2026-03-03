@@ -22,7 +22,7 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   TextEditingController _controller = TextEditingController();
-  String selected = 'All';
+  String selected = 'Songs';
 
   final filters = ['All', 'Songs', 'Artists', 'Albums'];
 

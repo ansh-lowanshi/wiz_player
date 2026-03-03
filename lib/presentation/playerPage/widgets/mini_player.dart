@@ -109,8 +109,6 @@ class MiniPlayer extends StatelessWidget {
                           ),
 
                           const SizedBox(height: 5),
-
-                          /// 🔥 Progress Bar
                           Container(
                             height: 4,
                             decoration: BoxDecoration(

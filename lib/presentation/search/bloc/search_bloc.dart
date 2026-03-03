@@ -1,7 +1,4 @@
 import 'package:hydrated_bloc/hydrated_bloc.dart';
-import 'package:wiz_player/data/model/album_model.dart';
-import 'package:wiz_player/data/model/artist_model.dart';
-import 'package:wiz_player/data/model/song_model.dart';
 import 'package:wiz_player/domain/repo/album_repo.dart';
 import 'package:wiz_player/domain/repo/artist_repo.dart';
 import 'package:wiz_player/domain/repo/global_search_repo.dart';
