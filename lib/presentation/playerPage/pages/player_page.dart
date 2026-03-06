@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:wiz_player/core/config/theme/app_colors.dart';
+import 'package:wiz_player/core/utils/text_utils.dart';
 import 'package:wiz_player/presentation/playerPage/bloc/player_bloc.dart';
 import 'package:wiz_player/presentation/playerPage/bloc/player_event.dart';
 import 'package:wiz_player/presentation/playerPage/bloc/player_state.dart';
@@ -81,7 +82,7 @@ class _PlayerPageState extends State<PlayerPage> {
                       ),
                       const SizedBox(height: 20),
                       Text(
-                        song.name,
+                        TextUtils.cleanString(song.name),
                         style: const TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
@@ -92,7 +93,7 @@ class _PlayerPageState extends State<PlayerPage> {
                       ),
                       SizedBox(height: 10),
                       Text(
-                        song.artistName,
+                        TextUtils.cleanString(song.artistName),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         // style: TextStyle(color: AppColors.white),

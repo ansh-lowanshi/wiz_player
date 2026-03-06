@@ -102,7 +102,7 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
     int remaining = _queue.length - _currentIndex - 1;
 
     if (remaining <= 2) {
-      _addSuggestions(_queue[_currentIndex]);
+      await _addSuggestions(_queue[_currentIndex]);
     }
 
     if (_currentIndex > 8 && _queue.length > 5) {
@@ -136,8 +136,19 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
   Future<void> _addSuggestions(SongEntity song) async {
     if (_queue.length >= 20) return;
     if (_isFetchingSuggestions) return;
+
+    _isFetchingSuggestions = true;
+
     try {
       final suggestions = await repository.songSuggestions(song.id);
+
+      //////////////////////
+      ///
+      if (suggestions.isEmpty) {
+        print("No suggestions returned");
+        return;
+      }
+      ///////////
 
       final existingIds = _queue.map((e) => e.id).toSet();
 
@@ -149,7 +160,13 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
       final limited = suggestions.take(5).toList();
 
       _queue.addAll(filtered);
-    } catch (_) {}
+
+      ///
+       print("Queue size after suggestions: ${_queue.length}");
+       ///
+    } catch (e) {
+      print("Suggestion error: $e");
+    }
 
     _isFetchingSuggestions = false;
   }

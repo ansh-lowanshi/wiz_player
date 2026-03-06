@@ -5,6 +5,11 @@ import 'package:wiz_player/common/appnavigation/app_navigation.dart';
 import 'package:wiz_player/core/config/theme/app_colors.dart';
 import 'package:wiz_player/core/config/theme/bloc/theme_bloc.dart';
 import 'package:wiz_player/core/config/theme/bloc/theme_event.dart';
+import 'package:wiz_player/core/utils/text_utils.dart';
+import 'package:wiz_player/domain/repo/album_repo.dart';
+import 'package:wiz_player/presentation/albumDetailPage/pages/album_page.dart';
+import 'package:wiz_player/presentation/albumDetailPage/bloc/ablum_detail_event.dart';
+import 'package:wiz_player/presentation/albumDetailPage/bloc/album_detail_bloc.dart';
 import 'package:wiz_player/presentation/playerPage/bloc/player_bloc.dart';
 import 'package:wiz_player/presentation/playerPage/bloc/player_event.dart';
 import 'package:wiz_player/presentation/playerPage/pages/player_page.dart';
@@ -174,6 +179,15 @@ class _SearchPageState extends State<SearchPage> {
                                   const SectionTitle(title: "Songs"),
                                   ...state.globalSearch!.songs.map(
                                     (song) => ListTile(
+                                      onTap: () {
+                                        context.read<PlayerBloc>().add(
+                                          LoadSong(song.id),
+                                        );
+                                        AppNavigation.push(
+                                          context,
+                                          PlayerPage(songId: song.id),
+                                        );
+                                      },
                                       leading: ClipRRect(
                                         borderRadius: BorderRadius.circular(15),
                                         child: Image.network(
@@ -184,14 +198,14 @@ class _SearchPageState extends State<SearchPage> {
                                         ),
                                       ),
                                       title: Text(
-                                        song.title,
+                                        TextUtils.cleanString(song.title),
                                         maxLines: 1,
                                         style: TextStyle(
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
                                       subtitle: Text(
-                                        song.artistName,
+                                        TextUtils.cleanString(song.artistName),
                                         maxLines: 1,
                                         style: TextStyle(
                                           overflow: TextOverflow.ellipsis,
@@ -210,7 +224,7 @@ class _SearchPageState extends State<SearchPage> {
                                         artist.imageUrl,
                                       ),
                                       title: Text(
-                                        artist.title,
+                                        TextUtils.cleanString(artist.title),
                                         maxLines: 1,
                                         style: TextStyle(
                                           overflow: TextOverflow.ellipsis,
@@ -225,6 +239,21 @@ class _SearchPageState extends State<SearchPage> {
                                   const SectionTitle(title: "Albums"),
                                   ...state.globalSearch!.albums.map(
                                     (album) => ListTile(
+                                      onTap: () {
+                                        AppNavigation.push(
+                                          context,
+                                          BlocProvider(
+                                            create: (context) =>
+                                                AlbumDetailBloc(
+                                                  context
+                                                      .read<AlbumRepository>(),
+                                                ),
+                                            child: AlbumDetailPage(
+                                              albumId: album.id,
+                                            ),
+                                          ),
+                                        );
+                                      },
                                       leading: ClipRRect(
                                         borderRadius: BorderRadius.circular(8),
                                         child: Image.network(
@@ -235,7 +264,7 @@ class _SearchPageState extends State<SearchPage> {
                                         ),
                                       ),
                                       title: Text(
-                                        album.title,
+                                        TextUtils.cleanString(album.title),
                                         maxLines: 1,
                                         style: TextStyle(
                                           overflow: TextOverflow.ellipsis,
@@ -243,7 +272,7 @@ class _SearchPageState extends State<SearchPage> {
                                       ),
                                       // subtitle: Text("ID: ${album.id}"),
                                       subtitle: Text(
-                                        album.artistName,
+                                        TextUtils.cleanString(album.artistName),
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                       ),
@@ -284,14 +313,14 @@ class _SearchPageState extends State<SearchPage> {
                                         ),
                                       ),
                                       title: Text(
-                                        song.name,
+                                        TextUtils.cleanString(song.name),
                                         maxLines: 1,
                                         style: TextStyle(
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
                                       subtitle: Text(
-                                        song.artistName,
+                                        TextUtils.cleanString(song.artistName),
                                         maxLines: 1,
                                         style: TextStyle(
                                           overflow: TextOverflow.ellipsis,
@@ -315,6 +344,21 @@ class _SearchPageState extends State<SearchPage> {
                                     final album = state.albums[index];
 
                                     return ListTile(
+                                      onTap: () {
+                                        AppNavigation.push(
+                                          context,
+                                          BlocProvider(
+                                            create: (context) =>
+                                                AlbumDetailBloc(
+                                                  context
+                                                      .read<AlbumRepository>(),
+                                                ),
+                                            child: AlbumDetailPage(
+                                              albumId: album.id,
+                                            ),
+                                          ),
+                                        );
+                                      },
                                       leading: ClipRRect(
                                         borderRadius: BorderRadius.circular(8),
                                         child: Image.network(
@@ -325,14 +369,14 @@ class _SearchPageState extends State<SearchPage> {
                                         ),
                                       ),
                                       title: Text(
-                                        album.name,
+                                        TextUtils.cleanString(album.name),
                                         maxLines: 1,
                                         style: TextStyle(
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
                                       subtitle: Text(
-                                        album.artistName,
+                                        TextUtils.cleanString(album.artistName),
                                         maxLines: 1,
                                         style: TextStyle(
                                           overflow: TextOverflow.ellipsis,
@@ -360,7 +404,7 @@ class _SearchPageState extends State<SearchPage> {
                                         artist.imageUrl,
                                       ),
                                       title: Text(
-                                        artist.name,
+                                        TextUtils.cleanString(artist.name),
                                         maxLines: 1,
                                         style: TextStyle(
                                           overflow: TextOverflow.ellipsis,
@@ -380,10 +424,7 @@ class _SearchPageState extends State<SearchPage> {
               ),
             ),
           ),
-          Align(
-            alignment: AlignmentGeometry.bottomCenter,
-            child: MiniPlayer(),
-          )
+          Align(alignment: AlignmentGeometry.bottomCenter, child: MiniPlayer()),
         ],
       ),
     );

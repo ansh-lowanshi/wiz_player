@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:wiz_player/data/model/album_detail_model.dart';
 
 class AlbumRemoteSource {
   static const _baseUrl = 'https://saavn.sumit.co';
@@ -18,5 +19,19 @@ class AlbumRemoteSource {
 
     final decoded = jsonDecode(response.body);
     return decoded['data']['results'];
+  }
+
+  Future<AlbumDetailModel> searchAlbumById(String id) async {
+    final uri = Uri.parse('$_baseUrl/api/albums?id=$id');
+
+    final respose = await http.get(uri);
+
+    if (respose.statusCode != 200) {
+      throw Exception('Failed to fetch the Album');
+    }
+
+    final decoded = jsonDecode(respose.body);
+
+    return AlbumDetailModel.fromJson(decoded);
   }
 }

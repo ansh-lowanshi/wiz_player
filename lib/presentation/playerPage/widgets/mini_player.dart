@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wiz_player/common/appnavigation/app_navigation.dart';
 import 'package:wiz_player/core/config/theme/app_colors.dart';
+import 'package:wiz_player/core/utils/text_utils.dart';
 import 'package:wiz_player/presentation/playerPage/bloc/player_bloc.dart';
 import 'package:wiz_player/presentation/playerPage/bloc/player_event.dart';
 import 'package:wiz_player/presentation/playerPage/bloc/player_state.dart';
@@ -80,7 +81,7 @@ class MiniPlayer extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
-                                      song.name,
+                                      TextUtils.cleanString(song.name),
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                       style: const TextStyle(
@@ -90,7 +91,7 @@ class MiniPlayer extends StatelessWidget {
                                       ),
                                     ),
                                     Text(
-                                      song.artistName,
+                                      TextUtils.cleanString(song.artistName),
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                       style: const TextStyle(

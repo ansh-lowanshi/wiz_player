@@ -1,4 +1,6 @@
+import 'package:wiz_player/data/model/album_detail_model.dart';
 import 'package:wiz_player/data/model/album_model.dart';
+import 'package:wiz_player/domain/entities/album_detail_entity.dart';
 import 'package:wiz_player/domain/repo/album_repo.dart';
 import '../../domain/entities/album_entity.dart';
 import '../sources/album_remote_source.dart';
@@ -13,5 +15,12 @@ class AlbumRepositoryImpl implements AlbumRepository {
     final results = await remoteSource.searchAlbums(query, limit: limit);
 
     return AlbumModel.fromList(results);
+  }
+
+  @override
+  Future <AlbumDetailEntity> searchAlbumById(String id) async {
+    final result = await remoteSource.searchAlbumById(id);
+
+    return result;
   }
 }
