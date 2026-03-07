@@ -7,9 +7,12 @@ import 'package:wiz_player/core/config/theme/bloc/theme_bloc.dart';
 import 'package:wiz_player/core/config/theme/bloc/theme_event.dart';
 import 'package:wiz_player/core/utils/text_utils.dart';
 import 'package:wiz_player/domain/repo/album_repo.dart';
+import 'package:wiz_player/domain/repo/artist_repo.dart';
 import 'package:wiz_player/presentation/albumDetailPage/pages/album_page.dart';
 import 'package:wiz_player/presentation/albumDetailPage/bloc/ablum_detail_event.dart';
 import 'package:wiz_player/presentation/albumDetailPage/bloc/album_detail_bloc.dart';
+import 'package:wiz_player/presentation/artistDetailPage/bloc/artist_detail_bloc.dart';
+import 'package:wiz_player/presentation/artistDetailPage/pages/artist_detail_page.dart';
 import 'package:wiz_player/presentation/playerPage/bloc/player_bloc.dart';
 import 'package:wiz_player/presentation/playerPage/bloc/player_event.dart';
 import 'package:wiz_player/presentation/playerPage/pages/player_page.dart';
@@ -35,6 +38,7 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        forceMaterialTransparency: true,
         title: Row(
           children: [
             Icon(Icons.music_note_outlined, color: AppColors.primary),
@@ -220,6 +224,21 @@ class _SearchPageState extends State<SearchPage> {
                                   const SectionTitle(title: "Artists"),
                                   ...state.globalSearch!.artists.map(
                                     (artist) => ListTile(
+                                      onTap: () {
+                                        AppNavigation.push(
+                                          context,
+                                          BlocProvider(
+                                            create: (context) =>
+                                                ArtistDetailBloc(
+                                                  context
+                                                      .read<ArtistRepository>(),
+                                                ),
+                                            child: ArtistDetailPage(
+                                              artistId: artist.id,
+                                            ),
+                                          ),
+                                        );
+                                      },
                                       leading: buildSafeArtistImage(
                                         artist.imageUrl,
                                       ),
@@ -400,6 +419,21 @@ class _SearchPageState extends State<SearchPage> {
                                     final artist = state.artists[index];
 
                                     return ListTile(
+                                      onTap: () {
+                                        AppNavigation.push(
+                                          context,
+                                          BlocProvider(
+                                            create: (context) =>
+                                                ArtistDetailBloc(
+                                                  context
+                                                      .read<ArtistRepository>(),
+                                                ),
+                                            child: ArtistDetailPage(
+                                              artistId: artist.id,
+                                            ),
+                                          ),
+                                        );
+                                      },
                                       leading: buildSafeArtistImage(
                                         artist.imageUrl,
                                       ),

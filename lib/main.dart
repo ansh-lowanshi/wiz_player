@@ -18,6 +18,7 @@ import 'package:wiz_player/domain/repo/artist_repo.dart';
 import 'package:wiz_player/domain/repo/global_search_repo.dart';
 import 'package:wiz_player/domain/repo/song_repo.dart';
 import 'package:wiz_player/presentation/albumDetailPage/bloc/album_detail_bloc.dart';
+import 'package:wiz_player/presentation/artistDetailPage/bloc/artist_detail_bloc.dart';
 import 'package:wiz_player/presentation/playerPage/bloc/player_bloc.dart';
 
 import 'package:wiz_player/presentation/search/bloc/search_bloc.dart';
@@ -65,6 +66,7 @@ class MyApp extends StatelessWidget {
             create: (context) =>
                 AlbumDetailBloc(context.read<AlbumRepository>()),
           ),
+          BlocProvider(create: (context) => ArtistDetailBloc(context.read<ArtistRepository>())),
         ],
         child: BlocBuilder<ThemeBloc, ThemeMode>(
           builder: (context, themeMode) {

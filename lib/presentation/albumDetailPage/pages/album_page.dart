@@ -102,7 +102,7 @@ class _AlbumDetailPageState extends State<AlbumDetailPage> {
                                       ),
                                     ),
                                 
-                                    const SizedBox(height: 6),
+                                    const SizedBox(height: 5),
                                 
                                     Text(
                                       TextUtils.cleanString(album.artistName),
@@ -112,7 +112,6 @@ class _AlbumDetailPageState extends State<AlbumDetailPage> {
                                       ),
                                     ),
                                 
-                                    const SizedBox(height: 6),
                                 
                                     Text(
                                       "${album.songs.length} Songs",
@@ -129,7 +128,6 @@ class _AlbumDetailPageState extends State<AlbumDetailPage> {
                         ),
                       ),
 
-                      /// SONG LIST
                       SliverList(
                         delegate: SliverChildBuilderDelegate((context, index) {
                           final song = album.songs[index];
@@ -137,7 +135,7 @@ class _AlbumDetailPageState extends State<AlbumDetailPage> {
                           return ListTile(
                             leading: Text(
                               (index + 1).toString(),
-                              // style: const TextStyle(color: Colors.white),
+                              style: const TextStyle(fontSize: 15),
                             ),
 
                             title: Text(
