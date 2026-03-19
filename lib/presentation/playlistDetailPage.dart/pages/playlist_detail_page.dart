@@ -2,31 +2,36 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:wiz_player/common/appnavigation/app_navigation.dart';
 import 'package:wiz_player/core/config/theme/app_colors.dart';
 import 'package:wiz_player/core/utils/text_utils.dart';
-import 'package:wiz_player/presentation/albumDetailPage/bloc/ablum_detail_event.dart';
-import 'package:wiz_player/presentation/albumDetailPage/bloc/album_detail_bloc.dart';
-import 'package:wiz_player/presentation/albumDetailPage/bloc/album_detail_state.dart';
 import 'package:wiz_player/presentation/playerPage/bloc/player_bloc.dart';
 import 'package:wiz_player/presentation/playerPage/bloc/player_event.dart';
-import 'package:wiz_player/presentation/playerPage/pages/player_page.dart';
 import 'package:wiz_player/presentation/playerPage/widgets/mini_player.dart';
+import 'package:wiz_player/presentation/playlistDetailPage.dart/bloc/playlist_detail_bloc.dart';
+import 'package:wiz_player/presentation/playlistDetailPage.dart/bloc/playlist_detail_event.dart';
+import 'package:wiz_player/presentation/playlistDetailPage.dart/bloc/playlist_detail_state.dart';
 
-class AlbumDetailPage extends StatefulWidget {
-  final String albumId;
+class PlaylistDetailPage extends StatefulWidget {
+  final String playlistId;
+  final String limit;
 
-  const AlbumDetailPage({super.key, required this.albumId});
+  const PlaylistDetailPage({
+    super.key,
+    required this.playlistId,
+    required this.limit,
+  });
 
   @override
-  State<AlbumDetailPage> createState() => _AlbumDetailPageState();
+  State<PlaylistDetailPage> createState() => _PlaylistDetailPageState();
 }
 
-class _AlbumDetailPageState extends State<AlbumDetailPage> {
+class _PlaylistDetailPageState extends State<PlaylistDetailPage> {
   @override
   void initState() {
     super.initState();
-    context.read<AlbumDetailBloc>().add(LoadAlbumDetail(widget.albumId));
+    context.read<PlaylistDetailBloc>().add(
+      LoadPlaylistDetails(widget.playlistId, widget.limit),
+    );
   }
 
   @override
@@ -34,7 +39,7 @@ class _AlbumDetailPageState extends State<AlbumDetailPage> {
     return Scaffold(
       body: Stack(
         children: [
-          BlocBuilder<AlbumDetailBloc, AlbumDetailState>(
+          BlocBuilder<PlaylistDetailBloc, PlaylistDetailState>(
             builder: (context, state) {
               if (state.isLoading) {
                 return Center(
@@ -49,21 +54,23 @@ class _AlbumDetailPageState extends State<AlbumDetailPage> {
                 return Center(child: Text(state.error!));
               }
 
-              final album = state.album;
+              final playlist = state.playlist;
 
-              if (album == null) {
-                return const Center(child: Text("Album not found"));
+              if (playlist == null) {
+                return const Center(child: Text("Playlist not found"));
               }
 
               return Stack(
                 fit: StackFit.loose,
                 children: [
-                  Image.network(album.imageUrl, fit: BoxFit.cover),
+                  Image.network(playlist.imageUrl, fit: BoxFit.cover),
                   BackdropFilter(
                     filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
-                    child: Container(color:Theme.of(context).brightness == Brightness.dark
-                            ? Colors.black.withOpacity(0.5)
-                            : Colors.white.withOpacity(0.5),),
+                    child: Container(
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.black.withOpacity(0.5)
+                          : Colors.white.withOpacity(0.5),
+                    ),
                   ),
 
                   CustomScrollView(
@@ -77,7 +84,7 @@ class _AlbumDetailPageState extends State<AlbumDetailPage> {
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(25),
                                 child: Image.network(
-                                  album.imageUrl,
+                                  playlist.imageUrl,
                                   height: 250,
                                 ),
                               ),
@@ -86,14 +93,12 @@ class _AlbumDetailPageState extends State<AlbumDetailPage> {
 
                               Container(
                                 width: double.infinity,
-                                padding: EdgeInsets.only(
-                                  left: 15
-                                ),
+                                padding: EdgeInsets.only(left: 15),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      TextUtils.cleanString(album.name),
+                                      TextUtils.cleanString(playlist.name),
                                       textAlign: TextAlign.center,
                                       style: const TextStyle(
                                         fontSize: 24,
@@ -101,20 +106,21 @@ class _AlbumDetailPageState extends State<AlbumDetailPage> {
                                         // color: Colors.white,
                                       ),
                                     ),
-                                
+
                                     const SizedBox(height: 5),
-                                
+
                                     Text(
-                                      TextUtils.cleanString(album.artistName),
+                                      TextUtils.cleanString(
+                                        playlist.artistName,
+                                      ),
                                       style: const TextStyle(
                                         fontSize: 16,
                                         // color: Colors.white70,
                                       ),
                                     ),
-                                
-                                
+
                                     Text(
-                                      "${album.songs.length} Songs",
+                                      "${playlist.songs.length} Songs",
                                       style: const TextStyle(
                                         fontSize: 14,
                                         // color: Colors.white70,
@@ -130,7 +136,7 @@ class _AlbumDetailPageState extends State<AlbumDetailPage> {
 
                       SliverList(
                         delegate: SliverChildBuilderDelegate((context, index) {
-                          final song = album.songs[index];
+                          final song = playlist.songs[index];
 
                           return ListTile(
                             leading: Text(
@@ -155,14 +161,12 @@ class _AlbumDetailPageState extends State<AlbumDetailPage> {
                             onTap: () {
                               context.read<PlayerBloc>().add(LoadSong(song.id));
 
-                              AppNavigation.push(
-                                context,
-                                PlayerPage(songId: song.id),
-                              );
+                              // AppNavigation.push(context,PlayerPage(songId: song.id),);
                             },
                           );
-                        }, childCount: album.songs.length),
+                        }, childCount: playlist.songs.length),
                       ),
+                      SliverToBoxAdapter(child: SizedBox(height: 75)),
                     ],
                   ),
                 ],

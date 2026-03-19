@@ -6,6 +6,7 @@ import 'package:wiz_player/presentation/HomeTab/pages/artists_page.dart';
 import 'package:wiz_player/presentation/HomeTab/pages/for_you_page.dart';
 import 'package:wiz_player/presentation/HomeTab/pages/most_played_page.dart';
 import 'package:wiz_player/presentation/HomeTab/pages/recently_played_page.dart';
+import 'package:wiz_player/presentation/HomeTab/widgets/recently_played_row.dart';
 
 class HomeTabPage extends StatefulWidget {
   const HomeTabPage({super.key});
@@ -15,45 +16,70 @@ class HomeTabPage extends StatefulWidget {
 }
 
 class _HomeTabPageState extends State<HomeTabPage> {
+  int refreshKey = 0;
+  Future<void> _refreshHome() async {
+    setState(() {
+      refreshKey++;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Container(
-        padding: EdgeInsets.all(10),
-        width: double.infinity,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Row(
+      child: RefreshIndicator(
+        onRefresh: _refreshHome,
+        child: SingleChildScrollView(
+          physics: AlwaysScrollableScrollPhysics(),
+          child: Container(
+            padding: EdgeInsets.all(10),
+            width: double.infinity,
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                _tabText('For you'),
-                _tabButton(context, ForYouPage()),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    _tabText('For you'),
+                    _tabButton(context, ForYouPage()),
+                  ],
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _tabText('Recently Played'),
+                        _tabButton(
+                          context,
+                          RecentlyPlayedPage(key: ValueKey(refreshKey)),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    RecentlyPlayedRow(key: ValueKey(refreshKey)),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    _tabText('Most Played'),
+                    _tabButton(context, MostPlayedPage()),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    _tabText('Artists'),
+                    _tabButton(context, ArtistsPage()),
+                  ],
+                ),
               ],
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _tabText('Recently Played'),
-                _tabButton(context, RecentlyPlayedPage()),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _tabText('Most Played'),
-                _tabButton(context, MostPlayedPage()),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _tabText('Artists'),
-                _tabButton(context, ArtistsPage()),
-              ],
-            ),
-          ],
+          ),
         ),
       ),
     );
@@ -63,10 +89,7 @@ class _HomeTabPageState extends State<HomeTabPage> {
 Widget _tabText(String text) {
   return Text(
     text,
-    style: TextStyle(
-      fontSize: 17,
-      fontWeight: FontWeight.w500,
-    ),
+    style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
   );
 }
 
@@ -79,8 +102,8 @@ Widget _tabButton(BuildContext context, Widget destination) {
     child: Row(
       children: [
         Text('See All', style: TextStyle(fontWeight: FontWeight.bold)),
-        SizedBox(width: 5,),
-        Icon(Icons.arrow_forward_ios,size: 12,)
+        SizedBox(width: 5),
+        Icon(Icons.arrow_forward_ios, size: 12),
       ],
     ),
   );

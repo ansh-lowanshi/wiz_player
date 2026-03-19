@@ -24,7 +24,7 @@ class ArtistRemoteSource {
 
   Future<ArtistDetailModel>searchArtistById(String id) async{
 
-    final uri = Uri.parse('$_baseUrl/api/artists/$id');
+    final uri = Uri.parse('$_baseUrl/api/artists/$id?songCount=${21}');
 
     final response = await http.get(uri);
 

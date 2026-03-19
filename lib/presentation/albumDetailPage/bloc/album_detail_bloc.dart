@@ -1,7 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wiz_player/domain/repo/album_repo.dart';
-import 'package:wiz_player/domain/repo/song_repo.dart';
 import 'package:wiz_player/presentation/albumDetailPage/bloc/ablum_detail_event.dart';
 import 'package:wiz_player/presentation/albumDetailPage/bloc/album_detail_state.dart';
 

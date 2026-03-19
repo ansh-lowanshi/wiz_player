@@ -7,10 +7,9 @@ import 'package:wiz_player/core/config/theme/app_colors.dart';
 import 'package:wiz_player/core/utils/text_utils.dart';
 import 'package:wiz_player/domain/repo/album_repo.dart';
 import 'package:wiz_player/presentation/albumDetailPage/bloc/album_detail_bloc.dart';
-import 'package:wiz_player/presentation/albumDetailPage/pages/album_page.dart';
+import 'package:wiz_player/presentation/albumDetailPage/pages/album_detail_page.dart';
 import 'package:wiz_player/presentation/playerPage/bloc/player_bloc.dart';
 import 'package:wiz_player/presentation/playerPage/bloc/player_event.dart';
-import 'package:wiz_player/presentation/playerPage/pages/player_page.dart';
 import 'package:wiz_player/presentation/playerPage/widgets/mini_player.dart';
 import '../bloc/artist_detail_bloc.dart';
 import '../bloc/artist_detail_event.dart';
@@ -155,10 +154,7 @@ class _ArtistDetailPageState extends State<ArtistDetailPage> {
                                               LoadSong(song.id),
                                             );
 
-                                            // AppNavigation.push(
-                                            //   context,
-                                            //   PlayerPage(songId: song.id),
-                                            // );
+                                            // AppNavigation.push( context,PlayerPage(songId: song.id),);
                                           },
                                           child: Row(
                                             children: [
@@ -301,7 +297,6 @@ class _ArtistDetailPageState extends State<ArtistDetailPage> {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            /// ALBUM IMAGE
                                             ClipRRect(
                                               borderRadius:
                                                   BorderRadius.circular(15),
@@ -335,7 +330,7 @@ class _ArtistDetailPageState extends State<ArtistDetailPage> {
                         ),
                       ),
 
-                      const SliverToBoxAdapter(child: SizedBox(height: 120)),
+                      const SliverToBoxAdapter(child: SizedBox(height: 50)),
                     ],
                   ),
                 ],
@@ -343,10 +338,8 @@ class _ArtistDetailPageState extends State<ArtistDetailPage> {
             },
           ),
 
-          /// MINI PLAYER
           const Align(alignment: Alignment.bottomCenter, child: MiniPlayer()),
 
-          /// BACK BUTTON
           Positioned(
             top: 10,
             left: 10,

@@ -1,7 +1,7 @@
 import 'dart:async';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wiz_player/data/model/song_model.dart';
+import 'package:wiz_player/core/services/frequent_playes_service.dart';
+import 'package:wiz_player/core/services/recently_played_service.dart';
 import 'package:wiz_player/domain/entities/song_entity.dart';
 import 'package:wiz_player/domain/repo/song_repo.dart';
 import 'package:wiz_player/presentation/playerPage/bloc/player_event.dart';
@@ -14,6 +14,9 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
   List<SongEntity> _queue = [];
   int _currentIndex = 0;
   bool _isFetchingSuggestions = false;
+  final RecentlyPlayedService _recentService = RecentlyPlayedService();
+  final FrequentPlayedService _frequentPlayedService = FrequentPlayedService();
+  bool _addedToRecentlyPlayed = false;
 
   StreamSubscription? _PlayerStateSub;
   StreamSubscription? _positionSub;
@@ -35,6 +38,15 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
 
     _positionSub = _audioPlayer.positionStream.listen((position) {
       emit(state.copyWith(position: position));
+      final duration = _audioPlayer.duration;
+      if (duration != null &&
+          // !_addedToRecentlyPlayed &&
+          state.song != null &&
+          position.inSeconds >= duration.inSeconds / 2) {
+        _recentService.addSong(state.song!.id);
+        _frequentPlayedService.incrementPlay(state.song!.id);
+        _addedToRecentlyPlayed = true;
+      }
     });
 
     _durationSub = _audioPlayer.durationStream.listen((duration) {
@@ -52,6 +64,7 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
 
       _queue.clear();
       _currentIndex = 0;
+      _addedToRecentlyPlayed = false;
 
       _queue.add(song);
 
@@ -142,14 +155,6 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
     try {
       final suggestions = await repository.songSuggestions(song.id);
 
-      //////////////////////
-      ///
-      if (suggestions.isEmpty) {
-        print("No suggestions returned");
-        return;
-      }
-      ///////////
-
       final existingIds = _queue.map((e) => e.id).toSet();
 
       final filtered = suggestions
@@ -157,16 +162,8 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
           .take(5)
           .toList();
 
-      final limited = suggestions.take(5).toList();
-
       _queue.addAll(filtered);
-
-      ///
-       print("Queue size after suggestions: ${_queue.length}");
-       ///
-    } catch (e) {
-      print("Suggestion error: $e");
-    }
+    } catch (_) {}
 
     _isFetchingSuggestions = false;
   }

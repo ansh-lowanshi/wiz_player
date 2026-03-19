@@ -8,15 +8,16 @@ import 'package:wiz_player/core/config/theme/bloc/theme_event.dart';
 import 'package:wiz_player/core/utils/text_utils.dart';
 import 'package:wiz_player/domain/repo/album_repo.dart';
 import 'package:wiz_player/domain/repo/artist_repo.dart';
-import 'package:wiz_player/presentation/albumDetailPage/pages/album_page.dart';
-import 'package:wiz_player/presentation/albumDetailPage/bloc/ablum_detail_event.dart';
+import 'package:wiz_player/domain/repo/playlist_repo.dart';
+import 'package:wiz_player/presentation/albumDetailPage/pages/album_detail_page.dart';
 import 'package:wiz_player/presentation/albumDetailPage/bloc/album_detail_bloc.dart';
 import 'package:wiz_player/presentation/artistDetailPage/bloc/artist_detail_bloc.dart';
 import 'package:wiz_player/presentation/artistDetailPage/pages/artist_detail_page.dart';
 import 'package:wiz_player/presentation/playerPage/bloc/player_bloc.dart';
 import 'package:wiz_player/presentation/playerPage/bloc/player_event.dart';
-import 'package:wiz_player/presentation/playerPage/pages/player_page.dart';
 import 'package:wiz_player/presentation/playerPage/widgets/mini_player.dart';
+import 'package:wiz_player/presentation/playlistDetailPage.dart/bloc/playlist_detail_bloc.dart';
+import 'package:wiz_player/presentation/playlistDetailPage.dart/pages/playlist_detail_page.dart';
 import 'package:wiz_player/presentation/search/bloc/search_bloc.dart';
 import 'package:wiz_player/presentation/search/bloc/search_evet.dart';
 import 'package:wiz_player/presentation/search/bloc/search_state.dart';
@@ -30,9 +31,9 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   TextEditingController _controller = TextEditingController();
-  String selected = 'Songs';
+  String selected = 'All';
 
-  final filters = ['All', 'Songs', 'Artists', 'Albums'];
+  final filters = ['All', 'Songs', 'Artists', 'Albums', 'Playlists'];
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +69,7 @@ class _SearchPageState extends State<SearchPage> {
               child: Column(
                 children: [
                   TextField(
-                    autofocus: true,
+                    autofocus: false,
                     controller: _controller,
                     textInputAction: TextInputAction.search,
                     onSubmitted: (value) {
@@ -112,29 +113,35 @@ class _SearchPageState extends State<SearchPage> {
                     ),
                   ),
                   SizedBox(height: 10),
-                  Wrap(
-                    spacing: 8,
-                    children: filters.map((filter) {
-                      return ChoiceChip(
-                        label: Text(filter),
-                        selected: selected == filter,
-                        onSelected: (_) {
-                          setState(() {
-                            selected = filter;
-                          });
-                          if (_controller.text.trim().isNotEmpty) {
-                            context.read<SearchBloc>().add(
-                              SearchRequest(_controller.text.trim(), selected),
-                            );
-                          }
-                        },
-                        selectedColor: AppColors.primary.withOpacity(0.15),
-                        backgroundColor:
-                            Theme.of(context).brightness == Brightness.light
-                            ? AppColors.lightBackground
-                            : AppColors.darkBackground,
-                      );
-                    }).toList(),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      spacing: 8,
+                      children: filters.map((filter) {
+                        return ChoiceChip(
+                          label: Text(filter),
+                          selected: selected == filter,
+                          onSelected: (_) {
+                            setState(() {
+                              selected = filter;
+                            });
+                            if (_controller.text.trim().isNotEmpty) {
+                              context.read<SearchBloc>().add(
+                                SearchRequest(
+                                  _controller.text.trim(),
+                                  selected,
+                                ),
+                              );
+                            }
+                          },
+                          selectedColor: AppColors.primary.withOpacity(0.15),
+                          backgroundColor:
+                              Theme.of(context).brightness == Brightness.light
+                              ? AppColors.lightBackground
+                              : AppColors.darkBackground,
+                        );
+                      }).toList(),
+                    ),
                   ),
                   Expanded(
                     child: BlocBuilder<SearchBloc, SearchState>(
@@ -166,7 +173,8 @@ class _SearchPageState extends State<SearchPage> {
                         } else {
                           if (state.songs.isEmpty &&
                               state.albums.isEmpty &&
-                              state.artists.isEmpty) {
+                              state.artists.isEmpty &&
+                              state.playlists.isEmpty) {
                             return const Center(
                               child: Text("Search for music 🎵"),
                             );
@@ -186,10 +194,6 @@ class _SearchPageState extends State<SearchPage> {
                                       onTap: () {
                                         context.read<PlayerBloc>().add(
                                           LoadSong(song.id),
-                                        );
-                                        AppNavigation.push(
-                                          context,
-                                          PlayerPage(songId: song.id),
                                         );
                                       },
                                       leading: ClipRRect(
@@ -299,6 +303,56 @@ class _SearchPageState extends State<SearchPage> {
                                   ),
                                   const SizedBox(height: 20),
                                 ],
+
+                                if (state
+                                    .globalSearch!
+                                    .playlists
+                                    .isNotEmpty) ...[
+                                  const SectionTitle(title: "Playlists"),
+                                  ...state.globalSearch!.playlists.map(
+                                    (playlist) => ListTile(
+                                      onTap: () {
+                                        AppNavigation.push(
+                                          context,
+                                          BlocProvider(
+                                            create: (context) =>
+                                                PlaylistDetailBloc(
+                                                  context.read<PlaylistRepo>(),
+                                                ),
+                                            child: PlaylistDetailPage(
+                                              playlistId: playlist.id,
+                                              limit: '40',
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      leading: ClipRRect(
+                                        borderRadius: BorderRadius.circular(8),
+                                        child: Image.network(
+                                          playlist.imageURL,
+                                          width: 50,
+                                          height: 50,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      title: Text(
+                                        TextUtils.cleanString(playlist.title),
+                                        maxLines: 1,
+                                        style: TextStyle(
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                      subtitle: Text(
+                                        TextUtils.cleanString(
+                                          playlist.description,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 20),
+                                ],
                               ],
 
                               if (selected == "Songs" &&
@@ -317,10 +371,10 @@ class _SearchPageState extends State<SearchPage> {
                                         context.read<PlayerBloc>().add(
                                           LoadSong(song.id),
                                         );
-                                        AppNavigation.push(
-                                          context,
-                                          PlayerPage(songId: song.id),
-                                        );
+                                        // AppNavigation.push(
+                                        //   context,
+                                        //   PlayerPage(songId: song.id),
+                                        // );
                                       },
                                       leading: ClipRRect(
                                         borderRadius: BorderRadius.circular(15),
@@ -448,12 +502,73 @@ class _SearchPageState extends State<SearchPage> {
                                   },
                                 ),
                               ],
+
+                              if (selected == "Playlists" &&
+                                  state.playlists.isNotEmpty) ...[
+                                // const SectionTitle(title: "Playlists"),
+                                SizedBox(height: 10),
+                                ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: state.playlists.length,
+                                  itemBuilder: (context, index) {
+                                    final playlists = state.playlists[index];
+
+                                    return ListTile(
+                                      onTap: () {
+                                        AppNavigation.push(
+                                          context,
+                                          BlocProvider(
+                                            create: (context) =>
+                                                PlaylistDetailBloc(
+                                                  context.read<PlaylistRepo>(),
+                                                ),
+                                            child: PlaylistDetailPage(
+                                              playlistId: playlists.id,
+                                              limit: playlists.songCount
+                                                  .toString(),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      minVerticalPadding: 20,
+                                      leading: ClipRRect(
+                                        borderRadius: BorderRadius.circular(8),
+                                        child: Image.network(
+                                          playlists.imageUrl,
+                                          width: 50,
+                                          height: 50,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      title: Text(
+                                        TextUtils.cleanString(playlists.name),
+                                        maxLines: 1,
+                                        style: TextStyle(
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                      // subtitle: Text(
+                                      //   TextUtils.cleanString(
+                                      //     playlists.songCount.toString(),
+                                      //   ),
+                                      //   maxLines: 1,
+                                      //   style: TextStyle(
+                                      //     overflow: TextOverflow.ellipsis,
+                                      //   ),
+                                      // ),
+                                    );
+                                  },
+                                ),
+                                const SizedBox(height: 20),
+                              ],
                             ],
                           ),
                         );
                       },
                     ),
                   ),
+                  SizedBox(height: 75),
                 ],
               ),
             ),

@@ -5,6 +5,7 @@ class GlobalSearchModel extends GlobalSearchEntity {
     required super.songs,
     required super.albums,
     required super.artists,
+    required super.playlists,
   });
 
   factory GlobalSearchModel.fromJson(Map<String, dynamic> json) {
@@ -15,6 +16,8 @@ class GlobalSearchModel extends GlobalSearchEntity {
     final albumsJson = (data?['albums']?['results'] as List?) ?? [];
 
     final artistsJson = (data?['artists']?['results'] as List?) ?? [];
+
+    final playlistJson = (data?['playlists']?['results'] as List?) ?? [];
 
     return GlobalSearchModel(
       songs: songsJson.map((e) {
@@ -49,6 +52,18 @@ class GlobalSearchModel extends GlobalSearchEntity {
           imageUrl: images.isNotEmpty
               ? images.last['url']?.toString() ?? ''
               : '',
+        );
+      }).toList(),
+
+      playlists: playlistJson.map((e) {
+        final images = (e['image'] as List?) ?? [];
+        return SearchPlaylistItem(
+          id: e['id']?.toString() ?? '',
+          title: e['title']?.toString() ?? '',
+          imageURL: images.isNotEmpty
+              ? images.last['url']?.toString() ?? ''
+              : '',
+          description: e['description']?.toString() ?? '',
         );
       }).toList(),
     );

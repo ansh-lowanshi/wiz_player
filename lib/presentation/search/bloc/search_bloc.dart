@@ -2,6 +2,7 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:wiz_player/domain/repo/album_repo.dart';
 import 'package:wiz_player/domain/repo/artist_repo.dart';
 import 'package:wiz_player/domain/repo/global_search_repo.dart';
+import 'package:wiz_player/domain/repo/playlist_repo.dart';
 import 'package:wiz_player/domain/repo/song_repo.dart';
 import 'package:wiz_player/presentation/search/bloc/search_evet.dart';
 import 'package:wiz_player/presentation/search/bloc/search_state.dart';
@@ -10,11 +11,13 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   final SongRepository songRepo;
   final AlbumRepository albumRepo;
   final ArtistRepository artistRepo;
+  final PlaylistRepo playlistRepo;
   final GlobalSearchRepo globalSearchRepo;
   SearchBloc({
     required this.songRepo,
     required this.albumRepo,
     required this.artistRepo,
+    required this.playlistRepo,
     required this.globalSearchRepo,
   }) : super(SearchState()) {
     on<SearchRequest>(_onSearch);
@@ -30,6 +33,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         songs: [],
         albums: [],
         artists: [],
+        playlists: [],
         globalSearch: null,
         error: null,
       ),
@@ -48,6 +52,9 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
           final artists = await artistRepo.searchArtists(event.query);
           emit(state.copyWith(isLoading: false, artists: artists));
           break;
+        case "Playlists":
+          final playlists = await playlistRepo.searchPlaylist(event.query);
+          emit(state.copyWith(isLoading: false, playlists: playlists));
         default:
           final globalSearchResult = await globalSearchRepo.searchAll(
             event.query,
@@ -60,6 +67,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
               songs: [],
               albums: [],
               artists: [],
+              playlists: [],
             ),
           );
       }
