@@ -54,34 +54,6 @@ WizPlayer tracks listening activity locally to provide a more personalized exper
 
 ---
 
-## 🏗️ Architecture
-
-WizPlayer follows **Clean Architecture** to keep the application modular, maintainable, and scalable.
-
-```text
-Presentation
-     │
-     ▼
-   BLoC
-     │
-     ▼
-   Domain
-     │
-     ▼
-    Data
-     │
-     ├── Local Storage
-     │      └── Hive
-     │
-     └── External Services
-            ├── Audio Engine
-            └── Firebase
-```
-
-The application separates presentation, business logic, domain models, and data-related responsibilities to make the codebase easier to maintain and extend.
-
----
-
 ## 🛠️ Tech Stack
 
 | Technology             | Purpose                                |
@@ -121,31 +93,6 @@ Integrated to capture application analytics and understand user interaction with
 
 ---
 
-## 🎵 Playback Flow
-
-```text
-User Interaction
-       │
-       ▼
-   BLoC Event
-       │
-       ▼
-Playback Logic
-       │
-       ▼
-  Audio Service
-       │
-       ▼
-   just_audio
-       │
-       ▼
- Audio Output
-```
-
-The playback architecture allows music to continue playing while the application is running in the background and enables interaction through system media controls.
-
----
-
 ## 🔍 Key Highlights
 
 * **Clean Architecture** for scalable project structure
@@ -162,67 +109,14 @@ The playback architecture allows music to continue playing while the application
 
 ---
 
-## 🚀 Getting Started
-
-### Prerequisites
-
-Make sure you have the following installed:
-
-* Flutter SDK
-* Dart SDK
-* Android Studio or VS Code
-* Android SDK
-* A physical Android device or emulator
-
-### Clone the Repository
-
-```bash
-git clone YOUR_GITHUB_REPOSITORY_URL
-cd wizplayer
-```
-
-### Install Dependencies
-
-```bash
-flutter pub get
-```
-
-### Run the Application
-
-```bash
-flutter run
-```
-
----
-
-## ⚙️ Configuration
-
-If Firebase is enabled in the project, configure your Firebase project using the appropriate FlutterFire configuration.
-
-```bash
-flutterfire configure
-```
-
-Make sure the required Firebase configuration files are present before running the application.
-
----
-
 ## 📸 Screenshots
 
-Add application screenshots here to showcase the UI and key features.
-
-```text
-screenshots/
-├── home.png
-├── player.png
-├── search.png
-├── playlist.png
-└── settings.png
-```
-
-Example:
-
 ![WizPlayer Home Screen](screenshots/home.png)
+<img width="1080" height="2340" alt="Screenshot_2026-08-24-22-22-25-303_com example wiz_player" src="https://github.com/user-attachments/assets/2915450b-a68c-40c0-9dae-267736cdc9bc" />
+<img width="1080" height="2340" alt="Screenshot_2026-08-24-22-22-44-793_com example wiz_player" src="https://github.com/user-attachments/assets/5d7b4ea2-b26d-4195-84a6-fff1c7a9941a" />
+<img width="1080" height="2340" alt="Screenshot_2026-08-24-22-23-01-525_com example wiz_player" src="https://github.com/user-attachments/assets/8f0a10a8-5e78-4d56-8bef-8976c70631a2" />
+<img width="1080" height="2340" alt="Screenshot_2026-08-24-22-23-06-181_com example wiz_player" src="https://github.com/user-attachments/assets/16790995-72c6-4a86-908d-8736247eb630" />
+
 
 ---
 
