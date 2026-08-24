@@ -111,11 +111,24 @@ Integrated to capture application analytics and understand user interaction with
 
 ## 📸 Screenshots
 
-![WizPlayer Home Screen](screenshots/home.png)
-<img width="1080" height="2340" alt="Screenshot_2026-08-24-22-22-25-303_com example wiz_player" src="https://github.com/user-attachments/assets/2915450b-a68c-40c0-9dae-267736cdc9bc" />
-<img width="1080" height="2340" alt="Screenshot_2026-08-24-22-22-44-793_com example wiz_player" src="https://github.com/user-attachments/assets/5d7b4ea2-b26d-4195-84a6-fff1c7a9941a" />
-<img width="1080" height="2340" alt="Screenshot_2026-08-24-22-23-01-525_com example wiz_player" src="https://github.com/user-attachments/assets/8f0a10a8-5e78-4d56-8bef-8976c70631a2" />
-<img width="1080" height="2340" alt="Screenshot_2026-08-24-22-23-06-181_com example wiz_player" src="https://github.com/user-attachments/assets/16790995-72c6-4a86-908d-8736247eb630" />
+<table>
+  <tr>
+    <td align="center">
+      <img src="https://github.com/user-attachments/assets/2915450b-a68c-40c0-9dae-267736cdc9bc" width="300"/>
+    </td>
+    <td align="center">
+      <img src="https://github.com/user-attachments/assets/5d7b4ea2-b26d-4195-84a6-fff1c7a9941a" width="300"/>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="https://github.com/user-attachments/assets/8f0a10a8-5e78-4d56-8bef-8976c70631a2" width="300"/>
+    </td>
+    <td align="center">
+      <img src="https://github.com/user-attachments/assets/16790995-72c6-4a86-908d-8736247eb630" width="300"/>
+    </td>
+  </tr>
+</table>
 
 
 ---
